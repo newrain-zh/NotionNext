@@ -36,8 +36,8 @@ export const MenuItemCollapse = props => {
       <div
         className={
           (selected
-            ? 'bg-green-600 text-white hover:text-white'
-            : 'hover:text-green-600') +
+            ? 'bg-gitbook-primary text-white hover:text-white'
+            : 'hover:bg-gray-50 text-gray-700 dark:text-gray-200 dark:hover:bg-gray-500 dark:hover:text-white') +
           ' px-7 w-full text-left duration-200 dark:bg-hexo-black-gray dark:border-black'
         }
         onClick={toggleShow}>

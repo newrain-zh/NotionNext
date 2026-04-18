@@ -22,7 +22,9 @@ export default function LogoBar(props) {
           alt={siteConfig('AUTHOR')}
           className='mr-2 hidden md:block '
         />
-        {siteInfo?.title || siteConfig('TITLE')}
+        <span className='bg-clip-text text-transparent bg-gradient-to-r from-gray-800 to-gray-500 dark:from-gray-100 dark:to-gray-400'>
+          {siteInfo?.title || siteConfig('TITLE')}
+        </span>
       </SmartLink>
     </div>
   )

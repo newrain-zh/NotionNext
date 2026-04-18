@@ -58,6 +58,13 @@ export async function getStaticProps({ locale }) {
   props.archivePosts = archivePosts
   delete props.allPages
 
+  // Next.js 不允许 getStaticProps 返回 undefined（JSON不支持），所以强制抹平为 null
+  Object.keys(props).forEach(key => {
+    if (props[key] === undefined) {
+      props[key] = null
+    }
+  })
+
   return {
     props,
     revalidate: process.env.EXPORT

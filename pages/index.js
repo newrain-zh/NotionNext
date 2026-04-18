@@ -7,6 +7,7 @@ import { generateSitemapXml } from '@/lib/utils/sitemap.xml'
 import { DynamicLayout } from '@/themes/theme'
 import { generateRedirectJson } from '@/lib/utils/redirect'
 import { checkDataFromAlgolia } from '@/lib/plugins/algolia'
+import { formatDateFmt } from '@/lib/utils/formatDate'
 
 /**
  * 首页布局
@@ -34,6 +35,22 @@ export async function getStaticProps(req) {
   props.posts = props.allPages?.filter(
     page => page.type === 'Post' && page.status === 'Published'
   )
+
+  // 归档处理应该在处理分页前进行，以保证包含所有文章
+  if (props.posts) {
+    const postsSortByDate = Object.create(props.posts)
+    postsSortByDate.sort((a, b) => b?.publishDate - a?.publishDate)
+    const archivePosts = {}
+    postsSortByDate.forEach(post => {
+      const date = formatDateFmt(post.publishDate, 'yyyy-MM')
+      if (archivePosts[date]) {
+        archivePosts[date].push(post)
+      } else {
+        archivePosts[date] = [post]
+      }
+    })
+    props.archivePosts = archivePosts
+  }
 
   // 处理分页
   if (siteConfig('POST_LIST_STYLE') === 'scroll') {

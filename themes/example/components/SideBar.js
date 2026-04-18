@@ -34,9 +34,9 @@ export const SideBar = props => {
   return (
     <>
       {/* 目录 */}
-      {post?.toc && post?.toc.length > 2 && (
-        <aside className='w-full rounded shadow overflow-hidden mb-6 pb-4'>
-          <h3 className='text-sm bg-gray-100 text-gray-700 dark:bg-hexo-black-gray dark:text-gray-200 py-3 px-4 dark:border-hexo-black-gray border-b'>
+      {post?.toc && post?.toc.length > 0 && (
+        <aside className='w-full rounded mb-6 pb-4'>
+          <h3 className='text-sm bg-transparent text-gray-500 py-3 px-4 border-b border-gray-400/20 font-bold tracking-widest'>
             {locale.COMMON.TABLE_OF_CONTENTS}
           </h3>
           <Catalog toc={post?.toc} />

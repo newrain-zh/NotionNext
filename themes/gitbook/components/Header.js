@@ -65,7 +65,7 @@ export default function Header(props) {
   return (
     <div id='top-nav' className={'fixed top-0 w-full z-20 ' + className}>
       {/* PC端菜单 */}
-      <div className='flex justify-center border-b dark:border-black items-center w-full h-16 bg-white dark:bg-hexo-black-gray'>
+      <div className='flex justify-center items-center w-full h-16 bg-transparent transition-all duration-500'>
         <div className='px-5 max-w-screen-4xl w-full flex gap-x-3 justify-between items-center'>
           {/* 左侧*/}
           <div className='flex'>
@@ -87,7 +87,7 @@ export default function Header(props) {
               <>
                 <SignedOut>
                   <SignInButton mode='modal'>
-                    <button className='bg-green-500 hover:bg-green-600 text-white rounded-lg px-3 py-2'>
+                    <button className='bg-gitbook-primary hover:bg-opacity-80 text-white rounded-gitbook px-3 py-2'>
                       {locale.COMMON.SIGN_IN}
                     </button>
                   </SignInButton>
@@ -120,7 +120,7 @@ export default function Header(props) {
         collapseRef={collapseRef}
         isOpen={isOpen}
         className='md:hidden'>
-        <div className='bg-white dark:bg-hexo-black-gray pt-1 py-2 lg:hidden '>
+        <div className='bg-white/80 dark:bg-black/60 backdrop-blur-3xl pt-1 py-2 lg:hidden shadow-inner'>
           <MenuBarMobile
             {...props}
             onHeightChange={param =>

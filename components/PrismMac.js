@@ -42,9 +42,14 @@ const PrismMac = () => {
     if (codeMacBar) {
       loadExternalResource('/css/prism-mac-style.css', 'css')
     }
+    
+    // 如果处于以PAPER模式(羊皮纸白底)为核心的主题或者页面，强制取消代码的Dark Mode以匹配Solarized Light亮色主题
+    const isPaperMode = document.querySelector('.read-mode-paper') !== null;
+    const effectiveDarkMode = isPaperMode ? false : isDarkMode;
+
     // 加载prism样式
     loadPrismThemeCSS(
-      isDarkMode,
+      effectiveDarkMode,
       prismThemeSwitch,
       prismThemeDarkPath,
       prismThemeLightPath,

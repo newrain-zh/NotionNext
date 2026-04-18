@@ -10,8 +10,7 @@ import { isBrowser } from '@/lib/utils'
 import { Transition } from '@headlessui/react'
 import SmartLink from '@/components/SmartLink'
 import { useRouter } from 'next/router'
-import { useEffect } from 'react'
-import BlogListArchive from './components/BlogListArchive'
+import { useEffect, useState } from 'react'
 import { BlogListPage } from './components/BlogListPage'
 import { BlogListScroll } from './components/BlogListScroll'
 import { Footer } from './components/Footer'
@@ -23,6 +22,11 @@ import { SideBar } from './components/SideBar'
 import TitleBar from './components/TitleBar'
 import CONFIG from './config'
 import { Style } from './style'
+import GlobalBackground from './components/GlobalBackground'
+import ExampleFloatingMenu from './components/ExampleFloatingMenu'
+import { LayoutArchive } from './components/LayoutArchive'
+import { LayoutCategoryIndex } from './components/LayoutCategoryIndex'
+import Catalog from './components/Catalog'
 
 /**
  * 基础布局框架
@@ -34,89 +38,126 @@ import { Style } from './style'
 const LayoutBase = props => {
   const { children, post } = props
   const { onLoading, fullWidth, locale } = useGlobal()
+  const [readMode, setReadMode] = useState(post ? 'paper' : 'none') // 'none' | 'paper'
 
-  // 文章详情页左右布局改为上下布局
-  const LAYOUT_VERTICAL =
-    post && siteConfig('EXAMPLE_ARTICLE_LAYOUT_VERTICAL', false, CONFIG)
+  // 每当页面切换并且发现进入了文章详情页时，自动将阅读模式切换为 paper
+  useEffect(() => {
+    if (post) {
+      setReadMode('paper')
+    } else {
+      setReadMode('none')
+    }
+  }, [post])
+
+  // 文章详情页左右布局配置 (默认显示在右侧，若配置为竖排则降至下方)
+  const LAYOUT_VERTICAL = post && siteConfig('EXAMPLE_ARTICLE_LAYOUT_VERTICAL', false, CONFIG)
 
   // 网站左右布局颠倒
   const LAYOUT_SIDEBAR_REVERSE = siteConfig('LAYOUT_SIDEBAR_REVERSE', false)
+  const router = useRouter()
+  const isHomePage = router.route === '/' || router.asPath === '/'
+  // 识别归档页面
+  const isArchivePage = router.asPath.includes('/archive')
 
   return (
     <div
       id='theme-example'
-      className={`${siteConfig('FONT_STYLE')} dark:text-gray-300  bg-white dark:bg-black scroll-smooth`}>
+      className={`${siteConfig('FONT_STYLE')} dark:text-gray-300 scroll-smooth ${readMode === 'cyber' ? 'read-mode-cyber' : ''} ${readMode === 'paper' ? 'read-mode-paper' : ''}`}>
       <Style />
+      {readMode === 'none' && <GlobalBackground />}
 
-      {/* 页头 */}
-      <Header {...props} />
-      {/* 标题栏 */}
-      <TitleBar {...props} />
+      {/* 原有的传统全宽顶部导航和标题栏已被废除，避免其白色或深色底色破坏全局动态雨景和玻璃拟态的沉浸观感。导航统一由 ExampleFloatingMenu 提供支持。 */}
 
       {/* 主体 */}
-      <div id='container-inner' className='w-full relative z-10'>
-        <div
-          id='container-wrapper'
-          className={`relative mx-auto justify-center md:flex py-8 px-2
-          ${LAYOUT_SIDEBAR_REVERSE ? 'flex-row-reverse' : ''} 
-          ${LAYOUT_VERTICAL ? 'items-center flex-col' : 'items-start'} 
-          `}>
-          {/* 内容 */}
-          <div
-            className={`${fullWidth ? '' : LAYOUT_VERTICAL ? 'max-w-5xl' : 'max-w-3xl'} w-full xl:px-14 lg:px-4`}>
-            <Transition
-              show={!onLoading}
-              appear={true}
-              enter='transition ease-in-out duration-700 transform order-first'
-              enterFrom='opacity-0 translate-y-16'
-              enterTo='opacity-100'
-              leave='transition ease-in-out duration-300 transform'
-              leaveFrom='opacity-100 translate-y-0'
-              leaveTo='opacity-0 -translate-y-16'
-              unmount={false}>
-              {/* 嵌入模块 */}
-              {props.slotTop}
-              {children}
-            </Transition>
-          </div>
-
-          {/* 侧边栏 */}
-          {!fullWidth && (
+      {isHomePage ? (
+        children
+      ) : (
+        <Transition
+          show={!onLoading}
+          appear={true}
+          enter='transition-all ease-out duration-700 transform'
+          enterFrom='opacity-0 -translate-y-20'
+          enterTo='opacity-100 translate-y-0'
+          leave='transition-all ease-in duration-300 transform'
+          leaveFrom='opacity-100 translate-y-0'
+          leaveTo='opacity-0 -translate-y-20'
+          unmount={false}>
+          <div id='container-inner' className={`w-full relative z-10 pt-20 pb-40 px-4 ${post ? 'min-h-screen bg-[#fafafa] !pt-4' : ''} transition-colors duration-500`}>
             <div
-              className={`${
-                LAYOUT_VERTICAL
-                  ? 'flex space-x-0 md:space-x-2 md:flex-row flex-col w-full max-w-5xl justify-center xl:px-14 lg:px-4'
-                  : 'md:w-64 sticky top-8'
-              }`}>
-              <SideBar {...props} />
+              id='container-wrapper'
+              className={`relative mx-auto justify-center md:flex min-h-[80vh] transition-all duration-500
+              ${
+                !post 
+                  ? // 这里是首页或归档页，保持深空毛玻璃发光效果
+                    `bg-white/10 dark:bg-black/10 backdrop-blur-lg rounded-3xl py-8 px-6 ${isArchivePage ? 'border-2 border-cyan-400/50 shadow-[0_0_50px_rgba(34,211,238,0.3),inset_0_0_40px_rgba(217,70,239,0.2)]' : 'border border-white/30 shadow-[0_8px_32px_0_rgba(0,0,0,0.3)]'}`
+                  : readMode === 'none'
+                  ? // 【文章详情页】默认保留 ZEN 明亮状态
+                    'bg-[#fafafa] text-gray-900 dark:bg-[#fafafa] dark:!text-gray-900 rounded-none py-12 px-2 shadow-none max-w-4xl border-none z-50'
+                  : // 【阅读模式】交由全局 CSS 处理背景，仅设透明及最大宽度
+                    'bg-transparent rounded-none py-12 px-2 shadow-none max-w-5xl border-none z-50'
+              }
+              ${LAYOUT_SIDEBAR_REVERSE ? 'flex-row-reverse' : ''} 
+              ${LAYOUT_VERTICAL ? 'items-center flex-col' : 'items-start'} 
+              `}>
+              
+              {/* 内容 */}
+              <div
+                className={`${fullWidth || (!post && !isHomePage) ? 'max-w-5xl' : LAYOUT_VERTICAL ? 'max-w-5xl' : 'max-w-3xl'} w-full xl:px-14 lg:px-4`}>
+                {props.slotTop}
+                {children}
+              </div>
+
+              {/* 侧边栏：在 PAPER 阅读模式下仅保留清爽的目录结构，非阅读模式保留原版 */}
+              {!fullWidth && !!post && (
+                <div
+                  className={`${
+                    LAYOUT_VERTICAL
+                      ? 'flex space-x-0 md:space-x-2 md:flex-row flex-col w-full max-w-5xl justify-center xl:px-14 lg:px-4'
+                      : 'md:w-64 sticky top-8'
+                  }`}>
+                  
+                  {readMode === 'paper' ? (
+                    post?.toc && post?.toc.length > 0 && (
+                      <aside className='w-full rounded mb-6 pb-4 bg-transparent pt-20 pl-4 hidden md:block'>
+                        <h3 className='text-sm text-[#5d4037] py-2 px-4 border-l-4 border-[#8d6e63]/50 font-bold tracking-widest font-serif uppercase'>
+                          <i className="fas fa-list-ul mr-2"></i> {locale.COMMON.TABLE_OF_CONTENTS}
+                        </h3>
+                        <div className="mt-4 opacity-70 hover:opacity-100 transition-opacity font-serif">
+                          <Catalog toc={post?.toc} />
+                        </div>
+                      </aside>
+                    )
+                  ) : (
+                    <SideBar {...props} />
+                  )}
+                  
+                </div>
+              )}
             </div>
-          )}
-        </div>
-      </div>
+          </div>
+        </Transition>
+      )}
 
-      {/* 页脚 */}
-      <Footer {...props} />
+      {/* 下方悬浮功能被清理：为了沉浸式的视频背景，去除了原有的白边 Footer 页脚（含黑暗模式开关）以及原本干扰页面右下角的回到顶部图标 */}
 
-      {/* 回顶按钮 */}
-      <div className='fixed right-4 bottom-4 z-10'>
-        <div
-          title={locale.POST.TOP}
-          className='cursor-pointer p-2 text-center'
-          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-          <i className='fas fa-angle-up text-2xl' />
+      {/* 全局底部交互悬浮菜单（最高层级） */}
+      <div className='fixed bottom-0 left-0 w-full z-50 pointer-events-none'>
+        <div className='pointer-events-auto'>
+          <ExampleFloatingMenu {...props} />
         </div>
       </div>
     </div>
   )
 }
 
+import AnimatedExampleHome from './components/AnimatedExampleHome'
 /**
  * 首页
  * @param {*} props
- * @returns 此主题首页就是列表
+ * @returns 全屏动画与底部菜单交互式首页
  */
 const LayoutIndex = props => {
-  return <LayoutPostList {...props} />
+  return <AnimatedExampleHome {...props} />
 }
 
 /**
@@ -129,15 +170,7 @@ const LayoutPostList = props => {
 
   return (
     <>
-      {/* 显示分类 */}
-      {category && (
-        <div className='pb-12'>
-          <i className='mr-1 fas fa-folder-open' />
-          {category}
-        </div>
-      )}
-      {/* 显示标签 */}
-      {tag && <div className='pb-12'>#{tag}</div>}
+      {/* 分类和标签的头部横幅已被移除，将统一转移至下方终端面板的首行指令中显示 */ }
 
       {siteConfig('POST_LIST_STYLE') === 'page' ? (
         <BlogListPage {...props} />
@@ -259,57 +292,6 @@ const LayoutSearch = props => {
   )
 }
 
-/**
- * 归档列表
- * @param {*} props
- * @returns 按照日期将文章分组排序
- */
-const LayoutArchive = props => {
-  const { archivePosts } = props
-  return (
-    <>
-      <div className='mb-10 pb-20 md:py-12 p-3  min-h-screen w-full'>
-        {Object.keys(archivePosts).map(archiveTitle => (
-          <BlogListArchive
-            key={archiveTitle}
-            archiveTitle={archiveTitle}
-            archivePosts={archivePosts}
-          />
-        ))}
-      </div>
-    </>
-  )
-}
-
-/**
- * 分类列表
- * @param {*} props
- * @returns
- */
-const LayoutCategoryIndex = props => {
-  const { categoryOptions } = props
-  return (
-    <>
-      <div id='category-list' className='duration-200 flex flex-wrap'>
-        {categoryOptions?.map(category => (
-          <SmartLink
-            key={category.name}
-            href={`/category/${category.name}`}
-            passHref
-            legacyBehavior>
-            <div
-              className={
-                'hover:text-black dark:hover:text-white dark:text-gray-300 dark:hover:bg-gray-600 px-5 cursor-pointer py-2 hover:bg-gray-100'
-              }>
-              <i className='mr-4 fas fa-folder' />
-              {category.name}({category.count})
-            </div>
-          </SmartLink>
-        ))}
-      </div>
-    </>
-  )
-}
 
 /**
  * 标签列表

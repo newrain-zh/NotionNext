@@ -32,12 +32,12 @@ const PageNavDrawer = props => {
         className='fixed top-0 left-0 z-40 md:hidden'>
         {/* 侧边菜单 */}
         <div
-          className={`${pageNavVisible ? 'animate__slideInLeft ' : '-ml-80 animate__slideOutLeft'} 
-                      overflow-y-hidden shadow-card w-72 duration-200 fixed left-1 bottom-16 rounded py-2 bg-white dark:bg-hexo-black-gray`}>
-          <div className='px-4 pb-2 flex justify-between items-center border-b font-bold'>
-            <span>{locale.COMMON.ARTICLE_LIST}</span>
+          className={`${pageNavVisible ? 'animate__slideInLeft ' : '-ml-[120%] animate__slideOutLeft'} 
+                      overflow-y-hidden shadow-2xl w-72 md:w-80 duration-300 fixed left-2 bottom-20 md:top-20 md:bottom-2 rounded-2xl md:rounded-r-3xl glass-card xl shadow-[0_12px_40px_rgba(0,0,0,0.04)] border border-slate-200/20 dark:border-slate-700/20`}>
+          <div className='px-4 py-3 flex justify-between items-center border-b border-slate-200/20 dark:border-slate-700/20 font-bold'>
+            <span className='text-gray-800 dark:text-gray-200'>{locale.COMMON.ARTICLE_LIST}</span>
             <i
-              className='fas fa-times p-1 cursor-pointer'
+              className='fas fa-times p-1 cursor-pointer text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors'
               onClick={() => {
                 changePageNavVisible(false)
               }}></i>

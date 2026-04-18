@@ -20,15 +20,15 @@ export default function BottomMenuBar({ post, className }) {
   }
 
   return (
-    <div className='md:hidden fixed bottom-0 left-0 z-50 w-full h-16 bg-white border-t border-gray-200 dark:bg-gray-700 dark:border-gray-600'>
+    <div className='md:hidden fixed bottom-0 left-0 right-0 z-50 flex justify-center pb-safe'>
       <div
-        className={`grid h-full max-w-lg  mx-auto font-medium ${showTocButton && 'grid-cols-2'}`}>
+        className={`rounded-full border border-slate-200/20 dark:border-slate-700/20 mb-8 mx-auto w-fit bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl shadow-[0_12px_40px_rgba(0,0,0,0.04)] flex items-center p-2 gap-1 max-w-lg font-medium`}>
         <button
           type='button'
           onClick={togglePageNavVisible}
-          className='inline-flex flex-col items-center justify-center px-5 border-gray-200 border-x hover:bg-gray-50 dark:hover:bg-gray-800 group dark:border-gray-600'>
-          <i className='fa-book fas w-5 h-5 mb-2 text-gray-500 dark:text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-500' />
-          <span className='text-sm text-gray-500 dark:text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-500'>
+          className='text-slate-600 dark:text-slate-400 px-4 py-2 flex items-center gap-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors scale-105 transition-all duration-500 ease-out font-manrope text-xs font-medium'>
+          <i className='fa-book fas w-4 h-4' />
+          <span>
             {locale.COMMON.ARTICLE_LIST}
           </span>
         </button>
@@ -37,9 +37,9 @@ export default function BottomMenuBar({ post, className }) {
           <button
             type='button'
             onClick={toggleToc}
-            className='inline-flex flex-col items-center justify-center px-5 border-gray-200 border-x hover:bg-gray-50 dark:hover:bg-gray-800 group dark:border-gray-600'>
-            <i className='fa-list-ol fas w-5 h-5 mb-2 text-gray-500 dark:text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-500' />
-            <span class='text-sm text-gray-500 dark:text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-500'>
+            className='bg-[#6a1cf6] text-white px-6 py-2 flex items-center gap-2 hover:bg-violet-700 rounded-full transition-colors scale-105 transition-all duration-500 ease-out font-manrope text-xs font-medium shadow-[0_10px_20px_rgba(106,28,246,0.3)]'>
+            <i className='fa-list-ol fas w-4 h-4' />
+            <span>
               {locale.COMMON.TABLE_OF_CONTENTS}
             </span>
           </button>

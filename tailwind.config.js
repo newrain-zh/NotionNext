@@ -39,6 +39,10 @@ module.exports = {
           'black-gray': '#101414',
           'light-gray': '#e5e5e5'
         },
+        gitbook: {
+          primary: 'var(--gitbook-primary)',
+          'card-bg': 'var(--gitbook-card-bg)'
+        },
         // black: '#212b36',
         'dark-700': '#090e34b3',
         dark: {
@@ -76,7 +80,11 @@ module.exports = {
         testimonial: '0px 10px 20px 0px rgba(92, 115, 160, 0.07)',
         'testimonial-btn': '0px 8px 15px 0px rgba(72, 72, 138, 0.08)',
         1: '0px 1px 3px 0px rgba(166, 175, 195, 0.40)',
-        2: '0px 5px 12px 0px rgba(0, 0, 0, 0.10)'
+        2: '0px 5px 12px 0px rgba(0, 0, 0, 0.10)',
+        gitbook: 'var(--gitbook-card-shadow)',
+      },
+      borderRadius: {
+        gitbook: 'var(--gitbook-card-radius)'
       }
     }
   },

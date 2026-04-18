@@ -63,7 +63,10 @@ async function postNotion(
 
   try {
     const response = await axios.post(url, payload, { headers })
-    return response
+    return {
+      status: response.status,
+      data: response.data as Record<string, unknown>
+    }
   } catch (error) {
     console.error('写入Notion异常', error)
     const errorMessage = error instanceof Error ? error.message : String(error)

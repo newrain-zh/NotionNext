@@ -138,7 +138,7 @@ const LayoutBase = props => {
 
       <div
         id='theme-gitbook'
-        className={`${siteConfig('FONT_STYLE')} pb-16 md:pb-0 scroll-smooth bg-white dark:bg-black w-full h-full min-h-screen justify-center dark:text-gray-300`}>
+        className={`${siteConfig('FONT_STYLE')} pb-16 md:pb-0 scroll-smooth bg-transparent w-full h-full min-h-screen justify-center dark:text-gray-300`}>
         <AlgoliaSearchModal cRef={searchModal} {...props} />
 
         {/* 顶部导航栏 */}
@@ -168,10 +168,10 @@ const LayoutBase = props => {
           {/* 中间内容区域 */}
           <div
             id='center-wrapper'
-            className='flex flex-col justify-between w-full relative z-10 pt-14 min-h-screen'>
+            className='flex flex-col justify-between w-full relative z-10 md:my-8 pt-10 min-h-screen glass-card md:rounded-[2.5rem] shadow-[0_12px_40px_rgba(0,0,0,0.02)] border border-slate-200/20 dark:border-slate-700/20 md:overflow-hidden overflow-x-hidden'>
             <div
               id='container-inner'
-              className={`w-full ${fullWidth ? 'px-5' : 'max-w-3xl px-3 lg:px-0'} justify-center mx-auto`}>
+              className={`w-full ${fullWidth ? 'px-5' : 'max-w-4xl lg:px-12 md:px-8 px-4 py-8 lg:py-12'} justify-center mx-auto`}>
               {slotTop}
               <WWAds className='w-full' orientation='horizontal' />
 
@@ -238,54 +238,16 @@ const LayoutBase = props => {
   )
 }
 
+import AnimatedHomeBackground from './components/AnimatedHomeBackground'
+
 /**
  * 首页
- * 重定向到某个文章详情页
+ * 替代原有重定向设计，呈现全新的全屏流体特效背景和交互按钮
  * @param {*} props
  * @returns
  */
 const LayoutIndex = props => {
-  const router = useRouter()
-  const index = siteConfig('GITBOOK_INDEX_PAGE', 'about', CONFIG)
-  const [hasRedirected, setHasRedirected] = useState(false) // 添加状态追踪是否已重定向
-
-  useEffect(() => {
-    const tryRedirect = async () => {
-      if (!hasRedirected) {
-        // 仅当未重定向时执行
-        setHasRedirected(true) // 更新状态，防止多次执行
-
-        // 重定向到指定文章
-        await router.push(index)
-
-        // 使用setTimeout检查页面加载情况
-        setTimeout(() => {
-          const article = document.querySelector(
-            '#article-wrapper #notion-article'
-          )
-          if (!article) {
-            console.log('请检查您的Notion数据库中是否包含此slug页面： ', index)
-
-            // 显示错误信息
-            const containerInner = document.querySelector(
-              '#theme-gitbook #container-inner'
-            )
-            const newHTML = `<h1 class="text-3xl pt-12 dark:text-gray-300">配置有误</h1><blockquote class="notion-quote notion-block-ce76391f3f2842d386468ff1eb705b92"><div>请在您的notion中添加一个slug为${index}的文章</div></blockquote>`
-            containerInner?.insertAdjacentHTML('afterbegin', newHTML)
-          }
-        }, 2000)
-      }
-    }
-
-    if (index) {
-      console.log('重定向', index)
-      tryRedirect()
-    } else {
-      console.log('无重定向', index)
-    }
-  }, [index, hasRedirected]) // 将 hasRedirected 作为依赖确保状态变更时更新
-
-  return null // 不渲染任何内容
+  return <AnimatedHomeBackground {...props} />
 }
 
 /**
